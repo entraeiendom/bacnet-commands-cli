@@ -1,5 +1,6 @@
 package no.entra.bacnet.cli;
 
+import no.entra.bacnet.cli.device.DevicesCommand;
 import no.entra.bacnet.cli.device.FindObjectNameCommand;
 import no.entra.bacnet.cli.device.FindSupportedServicesCommand;
 import picocli.CommandLine;
@@ -13,7 +14,8 @@ import picocli.CommandLine.Command;
         description = "Find devices, read their names and get present value from sensors.",
         subcommands = {
                 FindSupportedServicesCommand.class,
-                FindObjectNameCommand.class
+                FindObjectNameCommand.class,
+                DevicesCommand.class
         })
 //class Bacnet implements Callable<Integer> {
 
