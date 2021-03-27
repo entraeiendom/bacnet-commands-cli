@@ -2,7 +2,9 @@ package no.entra.bacnet.cli.listener;
 
 import picocli.CommandLine;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -33,35 +35,27 @@ public class BacnetListen implements Runnable {
             messageListener.start();
 
             while (true) {
-                System.out.println("***3");
-                int available;
+                System.out.println("Type q to exit.");
+                Scanner scanner = new Scanner(System.in);
 
-                while (true) {
-                    if (!((available = System.in.available()) == 0)) {
-                        System.out.println("***1");
-                        break;
+                List<String> tokens = new ArrayList<>();
+                while (scanner.hasNext()) {
+                    String next = scanner.nextLine();
+                    switch (next.toLowerCase()) {
+                        case "exit":
+                        case "quit":
+                        case "q": {
+                            System.out.println("Closing down.");
+                            scanner.close();
+                            break loop;
+                        }
+                        default: {
+                            tokens.add(next);
+                            System.out.println(tokens);
+                        }
                     }
                 }
-                do {
-
-                    switch (System.in.read()) {
-                        default:
-                            System.out.println("Default");
-                            blankLine = false;
-                            break;
-                        case '\n':
-                            System.out.println("Newline");
-                            if (blankLine)
-                                break loop;
-                            blankLine = true;
-//                            thread.interrupt();
-                            break;
-                    }
-                } while (--available > 0);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             System.out.println(String.format("Received: %s messages.", messageCount));
             System.out.println("Closing");
