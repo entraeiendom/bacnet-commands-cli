@@ -9,7 +9,7 @@ import picocli.CommandLine.Command;
  * Bacnet Commands
  *
  */
-@Command(name = "bacnet", mixinStandardHelpOptions = true, version = "4.0",
+@Command(name = "bacnet", mixinStandardHelpOptions = true, version = "0.1.0",
         description = "Find devices, read their names and get present value from sensors.",
         subcommands = {
                 FindSupportedServicesCommand.class,
@@ -19,11 +19,11 @@ import picocli.CommandLine.Command;
 
 //    @Parameters(index = "0", description = "The file whose checksum to calculate.")
 //    private File file;
-
-//    @Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
-//    private String ipAddress = "127.0.0.1";
-//    @Option(names = {"-p", "--port"}, description = "Bacnet Port default is 47808")
-//    private int port = 47808;
+class Bacnet {
+    @CommandLine.Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
+    private String ipAddress = "127.0.0.1";
+    @CommandLine.Option(names = {"-p", "--port"}, description = "Bacnet Port default is 47808")
+    private int port = 47808;
 
 //    @Override
 //    public Integer call() throws Exception { // your business logic goes here...
@@ -35,7 +35,7 @@ import picocli.CommandLine.Command;
 
     // this example implements Callable, so parsing, error handling and handling user
     // requests for usage help or version help can be done with one line of code.
-class Bacnet {
+
     public static void main(String... args) {
         int exitCode = new CommandLine(new Bacnet()).execute(args);
         System.exit(exitCode);
