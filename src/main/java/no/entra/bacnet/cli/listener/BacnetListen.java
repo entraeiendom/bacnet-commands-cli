@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 @CommandLine.Command(name = "listen", description = "Listen to incoming Bacnet messages")
-public class BacnetListener implements Runnable {
+public class BacnetListen implements Runnable {
     @CommandLine.Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
     private String ipAddress = "127.0.0.1";
     @CommandLine.Option(names = {"-p", "--port"}, description = "Bacnet Port default is 47808")

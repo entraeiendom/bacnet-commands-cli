@@ -3,7 +3,7 @@ package no.entra.bacnet.cli;
 import no.entra.bacnet.cli.device.DevicesCommand;
 import no.entra.bacnet.cli.device.FindObjectNameCommand;
 import no.entra.bacnet.cli.device.FindSupportedServicesCommand;
-import no.entra.bacnet.cli.listener.BacnetListener;
+import no.entra.bacnet.cli.listener.BacnetListen;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -17,7 +17,7 @@ import picocli.CommandLine.Command;
                 FindSupportedServicesCommand.class,
                 FindObjectNameCommand.class,
                 DevicesCommand.class,
-                BacnetListener.class
+                BacnetListen.class
         })
 //class Bacnet implements Callable<Integer> {
 
