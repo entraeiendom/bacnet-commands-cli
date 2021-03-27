@@ -14,14 +14,14 @@ public class DevicesCommand {
     private int port = 47808;
 
     @CommandLine.Command(name = "find", description = "Find Devices")
-    void findDevices(@CommandLine.Parameters(paramLabel = "ipAddress", description = "IP Address to the Device") String ipAddress,
-                     @CommandLine.Parameters(paramLabel = "port", description = "Bacnet Port. Default is 47808") Integer port ) {
+    void findDevices(@CommandLine.Parameters(paramLabel = "ipAddress", description = "IP Address to the Device") String ipAddressParam,
+                     @CommandLine.Parameters(paramLabel = "port", description = "Bacnet Port. Default is 47808", arity = "0.1") Integer portParam ) {
 
-        if (ipAddress != ipAddress) {
-            this.ipAddress = ipAddress;
+        if (ipAddressParam != ipAddressParam) {
+            this.ipAddress = ipAddressParam;
         }
-        if (port != null) {
-            this.port = port;
+        if (portParam != null) {
+            this.port = portParam;
         }
 
         System.out.println(String.format("Find devices using IP %s:%s", ipAddress, port));
