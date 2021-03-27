@@ -1,5 +1,7 @@
 package no.entra.bacnet.cli.listener;
 
+import no.entra.bacnet.cli.utils.BacnetUtils;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
@@ -43,6 +45,7 @@ public class BacnetMessageListener implements Runnable {
                 SocketAddress senderAddress = channel.receive(byteBuff);
                 byte[] receivedBytes = byteBuff.array();
                 String hexString = integersToHex(receivedBytes);
+                hexString = BacnetUtils.parseToHex(hexString);
                 messageCount++;
                 System.out.println(String.format("Message %s received: %s from %s", messageCount, hexString, senderAddress));
                 BacnetObservedMessage message = new BacnetObservedMessage(senderAddress, hexString);
