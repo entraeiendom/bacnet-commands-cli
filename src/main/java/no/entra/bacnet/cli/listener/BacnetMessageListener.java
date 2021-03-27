@@ -12,7 +12,7 @@ import java.nio.channels.DatagramChannel;
 import java.util.Arrays;
 import java.util.concurrent.BlockingDeque;
 
-import static no.entra.bacnet.cli.listener.ByteHexConverter.integersToHex;
+import static no.entra.bacnet.cli.utils.HexUtils.integersToHex;
 
 public class BacnetMessageListener implements Runnable {
 

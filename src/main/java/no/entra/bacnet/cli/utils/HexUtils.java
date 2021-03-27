@@ -24,4 +24,16 @@ public class HexUtils {
         }
         return data;
     }
+    public static String integersToHex(byte[] receivedBytes) {
+        String hexString = "";
+        for (byte receivedByte : receivedBytes) {
+            hexString += integerByteToHex(receivedByte);
+        }
+        return hexString;
+    }
+
+    public static String integerByteToHex(byte hexAsByte) {
+        String hex = String.format("%02x", hexAsByte);
+        return hex;
+    }
 }
