@@ -9,7 +9,6 @@ import java.net.SocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.Arrays;
 import java.util.concurrent.BlockingDeque;
 
 import static no.entra.bacnet.cli.utils.HexUtils.integersToHex;
@@ -46,7 +45,6 @@ public class BacnetMessageListener implements Runnable {
                 byteBuff.clear();
                 SocketAddress senderAddress = channel.receive(byteBuff);
                 byte[] receivedBytes = byteBuff.array();
-                System.out.println(String.format("bytes: %s", Arrays.toString(receivedBytes)));
                 String hexString = integersToHex(receivedBytes);
                 hexString = BacnetUtils.trimToValidHex(hexString);
                 messageCount++;
