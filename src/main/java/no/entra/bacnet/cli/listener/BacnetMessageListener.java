@@ -32,13 +32,14 @@ public class BacnetMessageListener implements Runnable {
     @Override
     public void run() {
         try {
+            channel = DatagramChannel.open();
+            channel.setOption(StandardSocketOptions.SO_REUSEPORT, true);
+            channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+            InetSocketAddress inetAddress = new InetSocketAddress(port);
+            channel.socket().bind(inetAddress);
+            System.out.println(String.format("Listening to %s:%s", inetAddress, port));
+
             while (true) {
-                channel = DatagramChannel.open();
-                channel.setOption(StandardSocketOptions.SO_REUSEPORT, true);
-                channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-                InetSocketAddress inetAddress = new InetSocketAddress(port);
-                channel.socket().bind(inetAddress);
-                System.out.println(String.format("Listening to %s:%s", inetAddress, port));
 
                 ByteBuffer byteBuff = ByteBuffer.allocate(2048);
                 byteBuff.clear();
