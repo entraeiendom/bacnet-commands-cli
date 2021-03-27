@@ -29,7 +29,7 @@ public class BacnetListen implements Runnable {
         loop:
         try {
 
-            messageConsumer = new Thread(new BacnetMessageConsumer(messageQueue));
+            messageConsumer = new Thread(new BacnetMessageConsumer(messageQueue, this));
             messageConsumer.start();
             messageListener = new Thread(new BacnetMessageListener(messageQueue, port));
             messageListener.start();
@@ -68,7 +68,7 @@ public class BacnetListen implements Runnable {
         }
     }
 
-    private void addCount() {
+    protected void addCount() {
         messageCount++;
     }
 }
