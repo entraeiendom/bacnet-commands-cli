@@ -6,7 +6,7 @@ import java.util.Locale;
 
 @CommandLine.Command(name = "devices",
 //        subcommands = { SubcommandAsClass.class, CommandLine.HelpCommand.class },
-        description = "Resolves ISO country codes (ISO-3166-1) or language codes (ISO 639-1/-2)")
+        description = "Find and List Devices")
 public class DevicesCommand {
     @CommandLine.Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
     private String ipAddress = "127.0.0.1";
