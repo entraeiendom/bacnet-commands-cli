@@ -13,8 +13,11 @@ public class BacnetUtils {
         return hexString;
     }
     public static String parseToHex(byte[] bacnetMessage) {
-        byte[] lenghtArray = Arrays.copyOfRange(bacnetMessage, 4, 8);
-        String hexString = integersToHex(lenghtArray);
+        byte[] lenghtArray = Arrays.copyOfRange(bacnetMessage, 2, 4);
+
+        int length = Byte.toUnsignedInt(lenghtArray[1]);
+        byte[] messageArray = Arrays.copyOfRange(bacnetMessage, 0, length);
+        String hexString = integersToHex(messageArray);
 
         return hexString;
     }
@@ -22,5 +25,15 @@ public class BacnetUtils {
         int messageLength = HexUtils.findMessageLength(hexString);
         hexString = hexString.substring(0, messageLength);
         return hexString;
+    }
+
+    int toInt(int[] array) {
+        int result = 0;
+        int offset = 1;
+        for(int i = array.length - 1; i >= 0; i--) {
+            result += array[i]*offset;
+            offset *= 10;
+        }
+        return result;
     }
 }
