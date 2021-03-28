@@ -1,5 +1,6 @@
 package no.entra.bacnet.cli.listener;
 
+import no.entra.bacnet.cli.sdk.BacnetJsonMapper;
 import no.entra.bacnet.json.Bacnet2Json;
 
 import java.util.concurrent.BlockingDeque;
@@ -35,6 +36,10 @@ public class BacnetMessageConsumer implements Runnable {
         try {
             String bacnetJson = Bacnet2Json.hexStringToJson(hexString);
             System.out.println("BacnetJson recieived is " + bacnetJson);
+            Object object = BacnetJsonMapper.map(bacnetJson);
+            if (object != null) {
+                System.out.println("Object: " + object.toString());
+            }
         } catch (Exception e) {
             System.err.println(String.format("Failed to format [%s]", hexString));
             e.printStackTrace();
