@@ -37,4 +37,14 @@ public class Sender {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Sender{" +
+                "ipAddress='" + ipAddress + '\'' +
+                ", port=" + port +
+                ", instanceNumber=" + instanceNumber +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

@@ -13,6 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class BacnetJsonMapper {
     private static final Logger log = getLogger(BacnetJsonMapper.class);
+
     public static BacnetMessage map(String bacnetJson) {
         BacnetMessage bacnetMessage = null;
         Gson gson = new GsonBuilder()

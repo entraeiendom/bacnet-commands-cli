@@ -33,10 +33,5 @@ class BacnetJsonMapperTest {
         assertEquals(Instant.parse("2021-03-28T17:39:11.695947Z"),bacnetMessage.getConfigurationRequest().getObservedAt() );
         assertEquals("unknown", bacnetMessage.getSender().getName());
         assertEquals("IAm", bacnetMessage.getService());
-//        assertTrue(configurationRequestObject instanceof ConfigurationRequest);
-//        ConfigurationRequest configurationRequest = (ConfigurationRequest) configurationRequestObject;
-//        Source expectedSource = new Source("adsf", "adsf");
-//        Source source = configurationRequest.getSource();
-//        assertEquals(expectedSource, source);
     }
 }

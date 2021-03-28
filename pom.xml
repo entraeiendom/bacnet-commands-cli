@@ -81,7 +81,7 @@
     <dependency>
       <groupId>no.entra.bacnet</groupId>
       <artifactId>bacnet2json</artifactId>
-      <version>0.9.5-SNAPSHOT</version>
+      <version>0.9.6</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
