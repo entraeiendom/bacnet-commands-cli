@@ -1,5 +1,7 @@
 package no.entra.bacnet.cli.listener;
 
+import no.entra.bacnet.json.Bacnet2Json;
+
 import java.util.concurrent.BlockingDeque;
 
 public class BacnetMessageConsumer implements Runnable {
@@ -20,10 +22,22 @@ public class BacnetMessageConsumer implements Runnable {
                 BacnetObservedMessage bacnetMessage = messageQueue.take();
                 messageCount ++;
                 bacnetListen.addCount();
-                System.out.println(String.format("BacnetMessageConsumer Message %s is: %s", messageCount, bacnetMessage));
+//                System.out.println(String.format("BacnetMessageConsumer Message %s is: %s", messageCount, bacnetMessage));
+                messageReceived(bacnetMessage);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    protected void messageReceived(BacnetObservedMessage bacnetMessage) {
+        String hexString = bacnetMessage.getHexString();
+        try {
+            String bacnetJson = Bacnet2Json.hexStringToJson(hexString);
+            System.out.println("BacnetJson recieived is " + bacnetJson);
+        } catch (Exception e) {
+            System.err.println(String.format("Failed to format [%s]", hexString));
+            e.printStackTrace();
         }
     }
 

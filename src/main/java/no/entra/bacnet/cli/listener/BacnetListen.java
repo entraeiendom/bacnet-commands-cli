@@ -71,4 +71,9 @@ public class BacnetListen implements Runnable {
     protected void addCount() {
         messageCount++;
     }
+
+    public static void main(String[] args) {
+        BacnetListen bacnetListen = new BacnetListen();
+        bacnetListen.run();
+    }
 }
