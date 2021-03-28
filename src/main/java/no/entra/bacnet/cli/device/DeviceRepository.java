@@ -1,5 +1,7 @@
 package no.entra.bacnet.cli.device;
 
+import no.entra.bacnet.cli.sdk.device.Device;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,5 +1,6 @@
 package no.entra.bacnet.cli.listener;
 
+import org.slf4j.Logger;
 import picocli.CommandLine;
 
 import java.util.ArrayList;
@@ -8,8 +9,11 @@ import java.util.Scanner;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @CommandLine.Command(name = "listen", description = "Listen to incoming Bacnet messages")
 public class BacnetListen implements Runnable {
+    private static final Logger console = getLogger("CONSOLE");
     @CommandLine.Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
     private String ipAddress = "127.0.0.1";
     @CommandLine.Option(names = {"-p", "--port"}, description = "Bacnet Port default is 47808")
@@ -36,6 +40,7 @@ public class BacnetListen implements Runnable {
 
             while (true) {
                 System.out.println("Type q to exit.");
+                console.info("Type q to exit");
                 Scanner scanner = new Scanner(System.in);
 
                 List<String> tokens = new ArrayList<>();

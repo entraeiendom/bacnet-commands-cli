@@ -1,4 +1,4 @@
-package no.entra.bacnet.cli.device;
+package no.entra.bacnet.cli.sdk.device;
 
 public class Device {
     private String id;
