@@ -2,8 +2,11 @@ package no.entra.bacnet.cli.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import no.entra.bacnet.cli.sdk.gson.ISOInstantAdapter;
 import no.entra.bacnet.cli.sdk.gson.SenderAdapter;
 import org.slf4j.Logger;
+
+import java.time.Instant;
 
 import static no.entra.bacnet.json.utils.StringUtils.hasValue;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -14,6 +17,7 @@ public class BacnetJsonMapper {
         BacnetMessage bacnetMessage = null;
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Sender.class, new SenderAdapter())
+                .registerTypeAdapter(Instant.class, new ISOInstantAdapter())
                 .create();
 
         if (hasValue(bacnetJson)) {

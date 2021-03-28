@@ -9,10 +9,18 @@ public class SenderAdapter implements JsonDeserializer<Sender> {
     @Override
     public Sender deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         Sender sender = null;
-        if (!(json instanceof JsonPrimitive)) {
+        if ((json instanceof JsonPrimitive)) {
             sender =  new Sender();
-            sender.setName(json.toString());
-            throw new JsonParseException("The date should be a string value");
+            String name = json.toString();
+            if (name.startsWith("\"")) {
+                name = name.substring(1);
+            }
+            if (name.endsWith("\"")) {
+                name = name.substring(0,name.length() -1);
+            }
+            sender.setName(name);
+        } else {
+            throw new JsonParseException("Parse of sender is not implemented yet.");
         }
         return sender;
     }

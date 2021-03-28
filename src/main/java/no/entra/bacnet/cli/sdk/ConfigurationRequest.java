@@ -1,11 +1,12 @@
 package no.entra.bacnet.cli.sdk;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigurationRequest {
     private String id;
-    private String observedAt;
+    private Instant observedAt;
     private Map<String, String> properties;
 
     public ConfigurationRequest() {
@@ -20,11 +21,11 @@ public class ConfigurationRequest {
         this.id = id;
     }
 
-    public String getObservedAt() {
+    public Instant getObservedAt() {
         return observedAt;
     }
 
-    public void setObservedAt(String observedAt) {
+    public void setObservedAt(Instant observedAt) {
         this.observedAt = observedAt;
     }
 
@@ -34,5 +35,12 @@ public class ConfigurationRequest {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public String getProperty(String key) {
+        if (properties == null) {
+            return null;
+        }
+        return properties.get(key);
     }
 }
