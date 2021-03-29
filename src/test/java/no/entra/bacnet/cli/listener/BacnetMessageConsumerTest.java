@@ -36,4 +36,19 @@ class BacnetMessageConsumerTest {
         List<Device> devices = DeviceRepository.getInstance().list();
         assertEquals(1, devices.size());
     }
+
+    @Test
+    void multipleMessagesFromTheSameDevice() {
+        String hexString = "810b000c0120ffff00ff1008";
+        SocketAddress senderAddress = new InetSocketAddress("/127.0.0.1", 47808);
+        BacnetObservedMessage observedMessage = new BacnetObservedMessage(senderAddress, hexString);
+        assertEquals(0, DeviceRepository.getInstance().list().size());
+        messageConsumer.messageReceived(observedMessage);
+        List<Device> devices = DeviceRepository.getInstance().list();
+        assertEquals(1, devices.size());
+        BacnetObservedMessage observedMessage2 = new BacnetObservedMessage(senderAddress, hexString);
+        messageConsumer.messageReceived(observedMessage);
+        devices = DeviceRepository.getInstance().list();
+        assertEquals(1, devices.size());
+    }
 }
