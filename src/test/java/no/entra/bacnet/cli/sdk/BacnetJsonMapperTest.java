@@ -36,6 +36,16 @@ class BacnetJsonMapperTest {
         assertEquals(Instant.parse("2021-03-28T17:39:11.695947Z"),bacnetMessage.getConfigurationRequest().getObservedAt() );
         assertEquals("unknown", bacnetMessage.getSender().getName());
         assertEquals("IAm", bacnetMessage.getService());
+        assertEquals(null, bacnetMessage.getInvokeId());
+    }
+
+    @Test
+    void readPropertyMinimal() {
+        String readPropertyResponse = "{\"invokeId\":0,\"sender\":\"unknown\",\"service\":\"ReadProperty\"}";
+        BacnetMessage bacnetMessage = BacnetJsonMapper.map(readPropertyResponse);
+        assertNotNull(bacnetMessage);
+        assertEquals("ReadProperty", bacnetMessage.getService());
+        assertEquals(0, bacnetMessage.getInvokeId());
     }
 
     @Test

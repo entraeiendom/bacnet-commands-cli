@@ -11,6 +11,7 @@ public class BacnetMessage {
     private Observation observation;
     private Sender sender;
     private String service;
+    private Integer invokeId;
     private Map<String, String> properties = new HashMap<>();
 
     public ConfigurationRequest getConfigurationRequest() {
@@ -45,12 +46,28 @@ public class BacnetMessage {
         this.service = service;
     }
 
+    public Integer getInvokeId() {
+        return invokeId;
+    }
+
+    public void setInvokeId(Integer invokeId) {
+        this.invokeId = invokeId;
+    }
+
     public Map<String, String> getProperties() {
         return properties;
     }
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public boolean hasObservation() {
+        return false;
+    }
+
+    public boolean hasConfigurationReqest() {
+        return this.getConfigurationRequest() != null;
     }
 
     @Override
@@ -60,15 +77,8 @@ public class BacnetMessage {
                 ", observation=" + observation +
                 ", sender=" + sender +
                 ", service='" + service + '\'' +
+                ", invokeId=" + invokeId +
                 ", properties=" + properties +
                 '}';
-    }
-
-    public boolean hasObservation() {
-        return false;
-    }
-
-    public boolean hasConfigurationReqest() {
-        return this.getConfigurationRequest() != null;
     }
 }
