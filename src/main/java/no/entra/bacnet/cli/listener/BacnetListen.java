@@ -1,5 +1,7 @@
 package no.entra.bacnet.cli.listener;
 
+import no.entra.bacnet.cli.device.DeviceRepository;
+import no.entra.bacnet.cli.sdk.device.Device;
 import org.slf4j.Logger;
 import picocli.CommandLine;
 
@@ -54,6 +56,9 @@ public class BacnetListen implements Runnable {
                             scanner.close();
                             break loop;
                         }
+                        case "list":
+                            listDevices();
+                            break;
                         default: {
                             tokens.add(next);
                             System.out.println(tokens);
@@ -70,6 +75,15 @@ public class BacnetListen implements Runnable {
             if (messageListener != null && messageListener.isAlive()) {
                 messageListener.interrupt();
             }
+        }
+    }
+
+    protected void listDevices() {
+        List<Device> devices = DeviceRepository.getInstance().list();
+        System.out.println("List of Devices: ");
+        for (Device device : devices) {
+            System.out.printf("instance: %s, ipAddress: %s, port: %s, lastSeen: %s \n",
+                    device.getInstanceNumber(), device.getIpAddress(), device.getPortNumber(), device.getObservedAt());
         }
     }
 

@@ -1,5 +1,6 @@
 package no.entra.bacnet.cli.listener;
 
+import no.entra.bacnet.cli.device.DeviceRepository;
 import no.entra.bacnet.cli.sdk.BacnetJsonMapper;
 import no.entra.bacnet.cli.sdk.BacnetMessage;
 import no.entra.bacnet.cli.sdk.ConfigurationRequest;
@@ -10,6 +11,9 @@ import no.entra.bacnet.cli.sdk.observation.ObservationMapper;
 import no.entra.bacnet.json.Bacnet2Json;
 import no.entra.bacnet.json.Observation;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.time.Instant;
 import java.util.concurrent.BlockingDeque;
 
 public class BacnetMessageConsumer implements Runnable {
@@ -44,6 +48,13 @@ public class BacnetMessageConsumer implements Runnable {
             String bacnetJson = Bacnet2Json.hexStringToJson(hexString);
             System.out.println("BacnetJson recieived is " + bacnetJson);
             BacnetMessage bacnetMessage = BacnetJsonMapper.map(bacnetJson);
+            SocketAddress senderAddress = observedMessage.getSenderAddress();
+            if (senderAddress != null && senderAddress instanceof InetSocketAddress) {
+                Sender sender = new Sender();
+                sender.setPort(((InetSocketAddress) senderAddress).getPort());
+                sender.setIpAddress(((InetSocketAddress) senderAddress).getHostName());
+                bacnetMessage.setSender(sender);
+            }
             handleMessageContent(bacnetMessage);
         } catch (Exception e) {
             System.err.println(String.format("Failed to format [%s]", hexString));
@@ -60,13 +71,30 @@ public class BacnetMessageConsumer implements Runnable {
             String service = bacnetMessage.getService();
             Sender sender = bacnetMessage.getSender();
             switch (service){
+                case "WhoIs":
                 case "IAm":
                     Device device = DeviceMapper.mapFromConfigurationRequest(sender, configurationRequest);
+                    updateDevice(device);
+                    break;
+                default:
+                    System.out.println(String.format("Service not implemented yet %s", service));
             }
+        } else if (bacnetMessage.getSender() != null) {
+            Sender sender = bacnetMessage.getSender();
+            Device device = new Device();
+            device.setObservedAt(Instant.now());
+            device.setIpAddress(sender.getIpAddress());
+            device.setPortNumber(sender.getPort());
+            device.setInstanceNumber(sender.getInstanceNumber());
+            updateDevice(device);
         }
         if (bacnetMessage != null) {
             System.out.println("Object: " + bacnetMessage.toString());
         }
+    }
+
+    void updateDevice(Device device) {
+        DeviceRepository.getInstance().update(device);
     }
 
     public long getMessageCount() {
