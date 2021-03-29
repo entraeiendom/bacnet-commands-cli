@@ -94,7 +94,7 @@ public class BacnetMessageConsumer implements Runnable {
     }
 
     void updateDevice(Device device) {
-        DeviceRepository.getInstance().update(device);
+        DeviceRepository.getInstance().updateObservedAt(device);
     }
 
     public long getMessageCount() {

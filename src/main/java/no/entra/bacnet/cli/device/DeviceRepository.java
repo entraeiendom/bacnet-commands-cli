@@ -2,9 +2,12 @@ package no.entra.bacnet.cli.device;
 
 import no.entra.bacnet.cli.sdk.device.Device;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static no.entra.bacnet.json.utils.StringUtils.hasValue;
 
 public class DeviceRepository {
 
@@ -23,14 +26,21 @@ public class DeviceRepository {
         return instance;
     }
 
-    public synchronized void add(Device device) {
+    public synchronized void add(Device device) throws BacnetDuplicateException {
+        List<Device> foundDevices = findById(device.getId());
+        if (foundDevices.size() > 0) {
+            throw new BacnetDuplicateException(device.getId());
+        }
+        String ipAddress = device.getIpAddress();
+        Integer portNumber = device.getPortNumber();
+        Integer instanceNumber = device.getInstanceNumber();
+        if (hasValue(ipAddress) && portNumber != null && instanceNumber != null) {
+            foundDevices = findByIpPortInstanceNumber(ipAddress, portNumber, instanceNumber);
+            if (foundDevices.size() > 0) {
+                throw new BacnetDuplicateException(ipAddress, portNumber, instanceNumber);
+            }
+        }
         devices.add(device);
-    }
-
-    public synchronized void update(Device device) {
-        //FIXME update device by ip, port and instanceId
-//        removeById(device.getId());
-        add(device);
     }
 
     public synchronized void removeById(String id) {
@@ -38,9 +48,20 @@ public class DeviceRepository {
     }
 
     public synchronized List<Device> findById(String id) {
+        if (!hasValue(id)) {
+            return new ArrayList<>();
+        }
         List<Device> devicesFound = devices
                 .stream()
                 .filter(d -> d.getId().equals(id))
+                .collect(Collectors.toList());
+        return devicesFound;
+    }
+
+    public synchronized List<Device> findByIpPortInstanceNumber(String ipAddress, int portNumber, int instanceNumber) {
+        List<Device> devicesFound = devices
+                .stream()
+                .filter(d -> d.getIpAddress().equals(ipAddress) && d.getPortNumber() == portNumber && d.getInstanceNumber() == instanceNumber)
                 .collect(Collectors.toList());
         return devicesFound;
     }
@@ -48,5 +69,40 @@ public class DeviceRepository {
         return devices;
     }
 
+    public synchronized long updateObservedAt(Device device) {
+        Instant observedAt = device.getObservedAt();
+        String deviceId = device.getId();
+        String ipAddress = device.getIpAddress();
+        Integer portNumber = device.getPortNumber();
+        Integer instanceNumber = device.getInstanceNumber();
+        final long[] updatedCount = {0};
+
+        if (hasValue(deviceId)) {
+            devices
+                    .stream()
+                    .filter(d -> d.getId().equals(deviceId))
+                    .forEach(d -> {
+                        updatedCount[0]++;
+                        d.setObservedAt(observedAt);
+                    });
+        } else if (hasValue(ipAddress) && portNumber != null && instanceNumber != null) {
+            devices
+                    .stream()
+                    .filter(d -> d.getIpAddress().equals(ipAddress) && d.getPortNumber().equals(portNumber) && d.getInstanceNumber().equals(instanceNumber))
+                    .forEach(d ->  {
+                        updatedCount[0]++;
+                        d.setObservedAt(observedAt);
+                    });
+        }
+        if (updatedCount[0] == 0) {
+            try {
+                updatedCount[0]++;
+                add(device);
+            } catch (BacnetDuplicateException e) {
+                //Based on previous searches this shoul not happen, and may be ignored.
+            }
+        }
+        return updatedCount[0];
+    }
 
 }

@@ -4,6 +4,7 @@ import no.entra.bacnet.cli.sdk.device.Device;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,18 +27,55 @@ class DeviceRepositoryTest {
     }
 
     @Test
-    void add() {
+    void add() throws BacnetDuplicateException {
         assertEquals(0, deviceRepository.list().size());
         deviceRepository.add(device);
         assertEquals(1, deviceRepository.list().size());
     }
 
     @Test
-    void update() {
+    void update() throws BacnetDuplicateException {
+        Instant anHourAgo = Instant.now().minusSeconds(3600);
+        device.setObservedAt(anHourAgo);
+        deviceRepository.add(device);
+        assertEquals(1, deviceRepository.list().size());
+        assertEquals(anHourAgo, deviceRepository.list().get(0).getObservedAt());
+        Instant currentTime = Instant.now();
+        Device updatedDevice = new Device();
+        updatedDevice.setId(deviceId);
+        updatedDevice.setInstanceNumber(0);
+        updatedDevice.setPortNumber(1234);
+        updatedDevice.setIpAddress("127.0.0.1");
+        updatedDevice.setObservedAt(currentTime);
+        deviceRepository.updateObservedAt(updatedDevice);
+        assertEquals(1, deviceRepository.list().size());
+        Instant observedAt = deviceRepository.list().get(0).getObservedAt();
+        assertEquals(currentTime, observedAt);
     }
 
     @Test
-    void removeById() {
+    void updateWithoutDeviceId() throws BacnetDuplicateException {
+        Instant anHourAgo = Instant.now().minusSeconds(3600);
+        device.setObservedAt(anHourAgo);
+        device.setId(null);
+        deviceRepository.add(device);
+        assertEquals(1, deviceRepository.list().size());
+        assertEquals(anHourAgo, deviceRepository.list().get(0).getObservedAt());
+        Instant currentTime = Instant.now();
+        Device updatedDevice = new Device();
+        updatedDevice.setInstanceNumber(0);
+        updatedDevice.setPortNumber(1234);
+        updatedDevice.setIpAddress("127.0.0.1");
+        updatedDevice.setObservedAt(currentTime);
+        long updatedCount = deviceRepository.updateObservedAt(updatedDevice);
+        assertEquals(1, updatedCount);
+        assertEquals(1, deviceRepository.list().size());
+        Instant updatedObservedAt = deviceRepository.list().get(0).getObservedAt();
+        assertEquals(currentTime, updatedObservedAt);
+    }
+
+    @Test
+    void removeById() throws BacnetDuplicateException {
         deviceRepository.add(device);
         assertEquals(1, deviceRepository.list().size());
         deviceRepository.removeById(deviceId);
@@ -45,7 +83,7 @@ class DeviceRepositoryTest {
     }
 
     @Test
-    void findById() {
+    void findById() throws BacnetDuplicateException {
         deviceRepository.add(device);
         assertEquals(1, deviceRepository.list().size());
         List<Device> foundDevices = deviceRepository.findById(deviceId);
@@ -54,5 +92,19 @@ class DeviceRepositoryTest {
         Device found = foundDevices.get(0);
         assertEquals(device.getId(), found.getId());
         assertEquals(device.getInstanceNumber(), found.getInstanceNumber());
+    }
+
+    @Test
+    void findByIpPortInstanceNumber() throws BacnetDuplicateException {
+        deviceRepository.add(device);
+        assertEquals(1, deviceRepository.list().size());
+        List<Device> foundDevices = deviceRepository.findByIpPortInstanceNumber(
+                device.getIpAddress(),
+                device.getPortNumber(),
+                device.getInstanceNumber()
+        );
+        assertNotNull(foundDevices);
+        assertEquals(1, foundDevices.size());
+
     }
 }
