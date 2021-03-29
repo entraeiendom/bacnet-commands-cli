@@ -4,7 +4,10 @@ import no.entra.bacnet.cli.sdk.device.Device;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DeviceRepositoryTest {
 
@@ -43,5 +46,13 @@ class DeviceRepositoryTest {
 
     @Test
     void findById() {
+        deviceRepository.add(device);
+        assertEquals(1, deviceRepository.list().size());
+        List<Device> foundDevices = deviceRepository.findById(deviceId);
+        assertNotNull(foundDevices);
+        assertEquals(1, foundDevices.size());
+        Device found = foundDevices.get(0);
+        assertEquals(device.getId(), found.getId());
+        assertEquals(device.getInstanceNumber(), found.getInstanceNumber());
     }
 }
