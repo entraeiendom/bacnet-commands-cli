@@ -1,5 +1,7 @@
 package no.entra.bacnet.cli.sdk;
 
+import no.entra.bacnet.cli.sdk.device.Device;
+import no.entra.bacnet.cli.sdk.device.DeviceMapper;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -38,6 +40,17 @@ class BacnetJsonMapperTest {
 
     @Test
     void mapDevice() {
-
+        BacnetMessage bacnetMessage = BacnetJsonMapper.map(configurationRequestJson);
+        assertNotNull(bacnetMessage);
+        Sender sender = new Sender();
+        sender.setInstanceNumber(8);
+        sender.setIpAddress("127.0.0.1");
+        sender.setPort(47808);
+        Device device = DeviceMapper.mapFromConfigurationRequest(sender, bacnetMessage.getConfigurationRequest());
+        assertNotNull(device);
+        assertEquals(8, device.getInstanceNumber());
+        assertEquals("127.0.0.1", device.getIpAddress());
+        assertEquals(47808, device.getPortNumber());
+        assertEquals(Instant.parse("2021-03-28T17:39:11.695947Z"),device.getObservedAt() );
     }
 }
