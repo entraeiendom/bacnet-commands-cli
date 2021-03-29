@@ -2,6 +2,7 @@ package no.entra.bacnet.cli.listener;
 
 import no.entra.bacnet.cli.device.DeviceRepository;
 import no.entra.bacnet.cli.sdk.device.Device;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,11 @@ class BacnetMessageConsumerTest {
         messageConsumer = new BacnetMessageConsumer(messageQueue, bacnetListen);
     }
 
+    @AfterEach
+    void tearDown() {
+        DeviceRepository.getInstance().clearAll();
+    }
+
     @Test
     void messageReceived() {
        String hexString = "810b000c0120ffff00ff1008";
@@ -38,7 +44,7 @@ class BacnetMessageConsumerTest {
     }
 
     @Test
-    void multipleMessagesFromTheSameDevice() {
+    void multipleMessagesFromTheSameDeviceWithoutInstanceId() {
         String hexString = "810b000c0120ffff00ff1008";
         SocketAddress senderAddress = new InetSocketAddress("/127.0.0.1", 47808);
         BacnetObservedMessage observedMessage = new BacnetObservedMessage(senderAddress, hexString);

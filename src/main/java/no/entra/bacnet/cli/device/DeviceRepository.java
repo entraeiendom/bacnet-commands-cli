@@ -93,6 +93,14 @@ public class DeviceRepository {
                         updatedCount[0]++;
                         d.setObservedAt(observedAt);
                     });
+        } else if (hasValue(ipAddress) && portNumber != null) {
+            devices
+                    .stream()
+                    .filter(d -> d.getIpAddress().equals(ipAddress) && d.getPortNumber().equals(portNumber) && d.getInstanceNumber() == null)
+                    .forEach(d ->  {
+                        updatedCount[0]++;
+                        d.setObservedAt(observedAt);
+                    });
         }
         if (updatedCount[0] == 0) {
             try {
@@ -103,6 +111,13 @@ public class DeviceRepository {
             }
         }
         return updatedCount[0];
+    }
+
+    /**
+     * Used for testing
+     */
+    public void clearAll() {
+       devices = new ArrayList<>();
     }
 
 }
