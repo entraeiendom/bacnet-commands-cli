@@ -26,19 +26,20 @@ public class BacnetListen implements Runnable {
 
     @Override
     public void run() {
-        boolean blankLine = true;
         messageQueue = new LinkedBlockingDeque<>(1000);
 
-        Thread messageConsumer = null;
-        Thread messageListener = null;
+        Thread messageConsumerThread = null;
+        Thread messageListenerThread = null;
+        BacnetMessageConsumer messageConsumer = new BacnetMessageConsumer(messageQueue, this);
+        BacnetMessageListener messageListener = new BacnetMessageListener(messageQueue, port);
 
         loop:
         try {
 
-            messageConsumer = new Thread(new BacnetMessageConsumer(messageQueue, this));
-            messageConsumer.start();
-            messageListener = new Thread(new BacnetMessageListener(messageQueue, port));
-            messageListener.start();
+            messageConsumerThread = new Thread(messageConsumer);
+            messageConsumerThread.start();
+            messageListenerThread = new Thread(messageListener);
+            messageListenerThread.start();
 
             while (true) {
                 System.out.println("Type q to exit.");
@@ -54,6 +55,8 @@ public class BacnetListen implements Runnable {
                         case "q": {
                             System.out.println("Closing down.");
                             scanner.close();
+                            messageConsumer.stop();
+                            messageListener.stop();
                             break loop;
                         }
                         case "list":
@@ -69,11 +72,11 @@ public class BacnetListen implements Runnable {
         } finally {
             System.out.println(String.format("Received: %s messages.", messageCount));
             System.out.println("Closing");
-            if (messageConsumer != null && messageConsumer.isAlive()) {
-                messageConsumer.interrupt();
+            if (messageConsumerThread != null && messageConsumerThread.isAlive()) {
+                messageConsumerThread.interrupt();
             }
-            if (messageListener != null && messageListener.isAlive()) {
-                messageListener.interrupt();
+            if (messageListenerThread != null && messageListenerThread.isAlive()) {
+                messageListenerThread.interrupt();
             }
         }
     }

@@ -18,6 +18,7 @@ import java.util.concurrent.BlockingDeque;
 
 public class BacnetMessageConsumer implements Runnable {
 
+    private volatile boolean isAlive = true;
     private final BlockingDeque<BacnetObservedMessage> messageQueue;
     private final BacnetListen bacnetListen;
     private long messageCount = 0;
@@ -30,9 +31,9 @@ public class BacnetMessageConsumer implements Runnable {
     @Override
     public void run() {
         try {
-            while (true) {
+            while (isAlive) {
                 BacnetObservedMessage bacnetMessage = messageQueue.take();
-                messageCount ++;
+                messageCount++;
                 bacnetListen.addCount();
 //                System.out.println(String.format("BacnetMessageConsumer Message %s is: %s", messageCount, bacnetMessage));
                 messageReceived(bacnetMessage);
@@ -70,7 +71,7 @@ public class BacnetMessageConsumer implements Runnable {
             ConfigurationRequest configurationRequest = bacnetMessage.getConfigurationRequest();
             String service = bacnetMessage.getService();
             Sender sender = bacnetMessage.getSender();
-            switch (service){
+            switch (service) {
                 case "WhoIs":
                 case "IAm":
                     Device device = DeviceMapper.mapFromConfigurationRequest(sender, configurationRequest);
@@ -99,5 +100,9 @@ public class BacnetMessageConsumer implements Runnable {
 
     public long getMessageCount() {
         return messageCount;
+    }
+
+    public void stop() {
+        isAlive = false;
     }
 }

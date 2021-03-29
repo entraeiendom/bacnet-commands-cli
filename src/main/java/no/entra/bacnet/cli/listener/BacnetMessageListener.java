@@ -15,6 +15,7 @@ import static no.entra.bacnet.cli.utils.HexUtils.integersToHex;
 
 public class BacnetMessageListener implements Runnable {
 
+    private volatile boolean isAlive = true;
     private final BlockingDeque<BacnetObservedMessage> messageQueue;
     private final int port;
 
@@ -39,7 +40,7 @@ public class BacnetMessageListener implements Runnable {
             channel.socket().bind(inetAddress);
             System.out.println(String.format("Listening to %s:%s", inetAddress, port));
 
-            while (true) {
+            while (isAlive) {
 
                 ByteBuffer byteBuff = ByteBuffer.allocate(2048);
                 byteBuff.clear();
@@ -62,5 +63,9 @@ public class BacnetMessageListener implements Runnable {
             channel.socket().close();
         }
 
+    }
+
+    public void stop() {
+        isAlive = false;
     }
 }
