@@ -35,6 +35,10 @@ class DeviceRepositoryTest {
 
     @Test
     void removeById() {
+        deviceRepository.add(device);
+        assertEquals(1, deviceRepository.list().size());
+        deviceRepository.removeById(deviceId);
+        assertEquals(0, deviceRepository.list().size());
     }
 
     @Test
