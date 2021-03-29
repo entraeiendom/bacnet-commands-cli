@@ -1,9 +1,11 @@
 package no.entra.bacnet.cli.sdk.device;
 
+import java.time.Instant;
+
 public class Device {
     private String id;
     private String ipAddress;
-    private String portNumber;
+    private Integer portNumber;
     private String objectName;
     private String tfmTag; //aka TverfagligMerkesystem(TFM) in Norwegian RealEstate
     private Integer instanceNumber;
@@ -12,6 +14,9 @@ public class Device {
     private boolean supportsReadPropertyMultiple = true;
     private String protocolVersion;
     private String protocolRevision;
+    private Integer maxAPDULengthAccepted;
+    private boolean segmentationSupported;
+    private Instant observedAt;
 
     public String getId() {
         return id;
@@ -29,11 +34,11 @@ public class Device {
         this.ipAddress = ipAddress;
     }
 
-    public String getPortNumber() {
+    public Integer getPortNumber() {
         return portNumber;
     }
 
-    public void setPortNumber(String portNumber) {
+    public void setPortNumber(Integer portNumber) {
         this.portNumber = portNumber;
     }
 
@@ -99,5 +104,29 @@ public class Device {
 
     public void setProtocolRevision(String protocolRevision) {
         this.protocolRevision = protocolRevision;
+    }
+
+    public void setMaxAPDULengthAccepted(Integer maxAPDULengthAccepted) {
+        this.maxAPDULengthAccepted = maxAPDULengthAccepted;
+    }
+
+    public Integer getMaxAPDULengthAccepted() {
+        return maxAPDULengthAccepted;
+    }
+
+    public void setSegmentationSupported(boolean segmentationSupported) {
+        this.segmentationSupported = segmentationSupported;
+    }
+
+    public boolean getSegmentationSupported() {
+        return segmentationSupported;
+    }
+
+    public void setObservedAt(Instant observedAt) {
+        this.observedAt = observedAt;
+    }
+
+    public Instant getObservedAt() {
+        return observedAt;
     }
 }

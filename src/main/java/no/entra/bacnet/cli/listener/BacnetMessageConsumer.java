@@ -2,7 +2,13 @@ package no.entra.bacnet.cli.listener;
 
 import no.entra.bacnet.cli.sdk.BacnetJsonMapper;
 import no.entra.bacnet.cli.sdk.BacnetMessage;
+import no.entra.bacnet.cli.sdk.ConfigurationRequest;
+import no.entra.bacnet.cli.sdk.Sender;
+import no.entra.bacnet.cli.sdk.device.Device;
+import no.entra.bacnet.cli.sdk.device.DeviceMapper;
+import no.entra.bacnet.cli.sdk.observation.ObservationMapper;
 import no.entra.bacnet.json.Bacnet2Json;
+import no.entra.bacnet.json.Observation;
 
 import java.util.concurrent.BlockingDeque;
 
@@ -38,12 +44,28 @@ public class BacnetMessageConsumer implements Runnable {
             String bacnetJson = Bacnet2Json.hexStringToJson(hexString);
             System.out.println("BacnetJson recieived is " + bacnetJson);
             BacnetMessage bacnetMessage = BacnetJsonMapper.map(bacnetJson);
-            if (bacnetMessage != null) {
-                System.out.println("Object: " + bacnetMessage.toString());
-            }
+            handleMessageContent(bacnetMessage);
         } catch (Exception e) {
             System.err.println(String.format("Failed to format [%s]", hexString));
             e.printStackTrace();
+        }
+    }
+
+    void handleMessageContent(BacnetMessage bacnetMessage) {
+        if (bacnetMessage.hasObservation()) {
+            Observation observation = ObservationMapper.mapObservation(bacnetMessage);
+        }
+        if (bacnetMessage.hasConfigurationReqest()) {
+            ConfigurationRequest configurationRequest = bacnetMessage.getConfigurationRequest();
+            String service = bacnetMessage.getService();
+            Sender sender = bacnetMessage.getSender();
+            switch (service){
+                case "IAm":
+                    Device device = DeviceMapper.mapFromConfigurationRequest(sender, configurationRequest);
+            }
+        }
+        if (bacnetMessage != null) {
+            System.out.println("Object: " + bacnetMessage.toString());
         }
     }
 

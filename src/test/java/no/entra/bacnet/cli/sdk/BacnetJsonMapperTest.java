@@ -8,23 +8,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class BacnetJsonMapperTest {
+    private final String configurationRequestJson = "{\n" +
+            "    \"configurationRequest\": {\n" +
+            "      \"observedAt\": \"2021-03-28T17:39:11.695947Z\",\n" +
+            "      \"id\": \"TODO\",\n" +
+            "      \"properties\": {\n" +
+            "        \"ObjectType\": \"Device\",\n" +
+            "        \"InstanceNumber\": \"8\",\n" +
+            "        \"MaxADPULengthAccepted\": \"1476\",\n" +
+            "        \"SegmentationSupported\": \"NoSegmentation\"\n" +
+            "      }\n" +
+            "    },\n" +
+            "    \"sender\": \"unknown\",\n" +
+            "    \"service\": \"IAm\"\n" +
+            "  }";
 
     @Test
     void mapTest() {
-        final String configurationRequestJson = "{\n" +
-                "    \"configurationRequest\": {\n" +
-                "      \"observedAt\": \"2021-03-28T17:39:11.695947Z\",\n" +
-                "      \"id\": \"TODO\",\n" +
-                "      \"properties\": {\n" +
-                "        \"ObjectType\": \"Device\",\n" +
-                "        \"InstanceNumber\": \"8\",\n" +
-                "        \"MaxADPULengthAccepted\": \"1476\",\n" +
-                "        \"SegmentationSupported\": \"NoSegmentation\"\n" +
-                "      }\n" +
-                "    },\n" +
-                "    \"sender\": \"unknown\",\n" +
-                "    \"service\": \"IAm\"\n" +
-                "  }";
+
         BacnetMessage bacnetMessage = BacnetJsonMapper.map(configurationRequestJson);
         assertNotNull(bacnetMessage);
         assertEquals("Device", bacnetMessage.getConfigurationRequest().getProperty("ObjectType"));
@@ -33,5 +34,10 @@ class BacnetJsonMapperTest {
         assertEquals(Instant.parse("2021-03-28T17:39:11.695947Z"),bacnetMessage.getConfigurationRequest().getObservedAt() );
         assertEquals("unknown", bacnetMessage.getSender().getName());
         assertEquals("IAm", bacnetMessage.getService());
+    }
+
+    @Test
+    void mapDevice() {
+
     }
 }

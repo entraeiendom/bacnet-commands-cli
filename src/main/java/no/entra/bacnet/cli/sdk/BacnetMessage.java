@@ -63,4 +63,12 @@ public class BacnetMessage {
                 ", properties=" + properties +
                 '}';
     }
+
+    public boolean hasObservation() {
+        return false;
+    }
+
+    public boolean hasConfigurationReqest() {
+        return this.getConfigurationRequest() != null;
+    }
 }

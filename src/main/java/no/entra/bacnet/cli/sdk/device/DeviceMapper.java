@@ -1,6 +1,11 @@
 package no.entra.bacnet.cli.sdk.device;
 
+import no.entra.bacnet.cli.sdk.ConfigurationRequest;
+import no.entra.bacnet.cli.sdk.Sender;
 import org.slf4j.Logger;
+
+import java.time.Instant;
+import java.util.Map;
 
 import static no.entra.bacnet.cli.sdk.utils.JsonPathHelper.getStringFailsafeNull;
 import static no.entra.bacnet.cli.sdk.utils.JsonPathHelper.hasElement;
@@ -45,13 +50,14 @@ public class DeviceMapper {
      * @param bacnetJson
      * @return
      */
-    public static Device parse(String bacnetJson) {
+    public static Device mapFromJson(String bacnetJson) {
         Device deviceId = new Device();
         String ipAddressKey = "$.sender.ip";
         String ipAddress = getStringFailsafeNull(bacnetJson, ipAddressKey);
         deviceId.setIpAddress(ipAddress);
         String portKey = "$.sender.port";
-        String port = getStringFailsafeNull(bacnetJson, portKey);
+        String portValue = getStringFailsafeNull(bacnetJson, portKey);
+        Integer port = parseInteger(portValue);
         deviceId.setPortNumber(port);
         String instanceNumberKey = "$.sender.instanceNumber";
         String instanceNumberString = getStringFailsafeNull(bacnetJson, instanceNumberKey);
@@ -62,6 +68,10 @@ public class DeviceMapper {
         if (instanceNumber != null) {
             deviceId.setInstanceNumber(instanceNumber);
         }
+        String observedAtKey = "$.configurationRequest.observedAt";
+        String observedAtString = getStringFailsafeNull(bacnetJson, observedAtKey);
+        Instant observedAt = findInstantInString(observedAtString);
+        deviceId.setObservedAt(observedAt);
         /*
         if (hasElement(bacnetJson, "$.sender.gateway")) {
             String gatwayInstanceNumberKey = "$.sender.gateway.instanceNumber";
@@ -96,6 +106,16 @@ public class DeviceMapper {
         return deviceId;
     }
 
+    private static Instant findInstantInString(String instantString) {
+        Instant instant = null;
+        try {
+            instant = Instant.parse(instantString);
+        } catch (Exception e) {
+            log.trace("Can not parse Instant from [{}]", instantString);
+        }
+        return instant;
+    }
+
     private static Integer findIntegerInString(String instanceNumberString) {
         Integer instanceNumber = null;
         if (hasValue(instanceNumberString)) {
@@ -118,5 +138,56 @@ public class DeviceMapper {
             instanceNumber = findIntegerInString(instanceNumberString);
         }
         return instanceNumber;
+    }
+
+    /*
+    {
+    "configurationRequest": {
+      "observedAt": "2021-03-28T18:10:13.328630Z",
+      "id": "TODO",
+      "properties": {
+        "ObjectType": "Device",
+        "InstanceNumber": "8",
+        "MaxADPULengthAccepted": "1476",
+        "SegmentationSupported": "NoSegmentation"
+      }
+    },
+    "sender": "unknown",
+    "service": "IAm"
+  }
+     */
+    public static Device mapFromConfigurationRequest(Sender sender, ConfigurationRequest configurationRequest) {
+        Device device = null;
+
+        Map<String, String> props = configurationRequest.getProperties();
+        String objectType = props.get("ObjectType");
+        if (objectType.equals("Device")) {
+            device = new Device();
+            String instanceNumberVale = props.get("InstanceNumber");
+            Integer instanceNumber = parseInteger(instanceNumberVale);
+            device.setInstanceNumber(instanceNumber);
+            String maxApduLengthValue = props.get("MaxADPULengthAccepted");
+            Integer maxApduLength = parseInteger(maxApduLengthValue);
+            device.setMaxAPDULengthAccepted(maxApduLength);
+            String segmentationSupported = props.get("SegmentationSupported");
+            if (segmentationSupported.equalsIgnoreCase("NoSegmentation")) {
+                device.setSegmentationSupported(false);
+            }
+            device.setIpAddress(sender.getIpAddress());
+            device.setPortNumber(sender.getPort());
+            device.setObservedAt(configurationRequest.getObservedAt());
+
+        }
+        return device;
+    }
+
+    private static int parseInteger(String integerValue) {
+        Integer value = null;
+        try {
+            value = Integer.parseInt(integerValue);
+        } catch (NumberFormatException nfe) {
+            log.trace("Could not parse Integer from [{}]", integerValue);
+        }
+        return value;
     }
 }
