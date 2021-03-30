@@ -5,7 +5,7 @@
 
   <groupId>no.entra.bacnet</groupId>
   <artifactId>bacnet-commands-cli</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.0</version>
 
   <name>bacnet-commands-cli</name>
   <url>https://github.com/entraeiendom/bacnet-commands-cli/blob/master/README.md</url>
@@ -23,7 +23,7 @@
     <developerConnection>scm:git:ssh://git@github.com/entraeiendom/bacnet-commands-cli.git</developerConnection>
     <connection>scm:git:https://github.com/entraeiendom/bacnet-commands-cli.git</connection>
     <url>https://github.com/entraeiendom/bacnet-commands-cli</url>
-    <tag>HEAD</tag>
+    <tag>bacnet-commands-cli-0.2.0</tag>
   </scm>
 
   <properties>
