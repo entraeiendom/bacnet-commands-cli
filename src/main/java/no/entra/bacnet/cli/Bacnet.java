@@ -10,7 +10,7 @@ import picocli.CommandLine.Command;
 /**
  * Bacnet Commands
  */
-@Command(name = "bacnet", mixinStandardHelpOptions = true, version = "0.2.0-SNAPSHOT",
+@Command(name = "bacnet", mixinStandardHelpOptions = true, version = "0.2.2-SNAPSHOT",
         description = "Find devices, read their names and get present value from sensors.",
         subcommands = {
                 FindSupportedServicesCommand.class,
@@ -25,7 +25,7 @@ class Bacnet {
     private int port = 47808;
 
     public static void main(String... args) {
-        System.out.println("Version is 0.2.0-SNAPSHOT");
+        System.out.println("Version is 0.2.2-SNAPSHOT");
         int exitCode = new CommandLine(new Bacnet()).execute(args);
         System.exit(exitCode);
     }
