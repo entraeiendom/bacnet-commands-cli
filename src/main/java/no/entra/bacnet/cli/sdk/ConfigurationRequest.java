@@ -1,12 +1,18 @@
 package no.entra.bacnet.cli.sdk;
 
+import no.entra.bacnet.objects.ObjectId;
+import no.entra.bacnet.objects.ObjectType;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.entra.bacnet.utils.StringUtils.hasValue;
+
 public class ConfigurationRequest {
     private String id;
     private Instant observedAt;
+    private Map<String, String > source;
     private Map<String, String> properties;
 
     public ConfigurationRequest() {
@@ -42,6 +48,30 @@ public class ConfigurationRequest {
             return null;
         }
         return properties.get(key);
+    }
+
+    public Map<String, String> getSource() {
+        return source;
+    }
+
+    public void setSource(Map<String, String> source) {
+        this.source = source;
+    }
+
+    public ObjectId getObjectIdentifier() {
+        ObjectId objectId = null;
+        if (source != null && source.get("objectId") != null) {
+            String objectIdValue = source.get("objectId");
+            if (hasValue(objectIdValue) && objectIdValue.contains("_")) {
+                String[] typeAndInstance = objectIdValue.split("_");
+                if (typeAndInstance.length == 2) {
+                    ObjectType objectType = ObjectType.valueOf(typeAndInstance[0]);
+                    String instanceNumber = typeAndInstance[1];
+                    objectId = new ObjectId(objectType, instanceNumber);
+                }
+            }
+        }
+        return objectId;
     }
 
     @Override

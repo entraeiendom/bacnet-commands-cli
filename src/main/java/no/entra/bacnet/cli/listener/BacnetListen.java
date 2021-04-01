@@ -111,8 +111,8 @@ public class BacnetListen implements Runnable {
         List<Device> devices = DeviceRepository.getInstance().list();
         System.out.println("List of Devices: ");
         for (Device device : devices) {
-            System.out.printf("instance: %s, ipAddress: %s, port: %s, lastSeen: %s \n",
-                    device.getInstanceNumber(), device.getIpAddress(), device.getPortNumber(), device.getObservedAt());
+            System.out.printf("%s instance: %s, ipAddress: %s, port: %s, lastSeen: %s \n",
+                    device.getObjectName(), device.getInstanceNumber(), device.getIpAddress(), device.getPortNumber(), device.getObservedAt());
         }
     }
 

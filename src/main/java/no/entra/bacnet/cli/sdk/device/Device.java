@@ -1,6 +1,10 @@
 package no.entra.bacnet.cli.sdk.device;
 
+import no.entra.bacnet.objects.Property;
+
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Device {
     private String id;
@@ -17,6 +21,7 @@ public class Device {
     private Integer maxAPDULengthAccepted;
     private boolean segmentationSupported;
     private Instant observedAt;
+    private Map<String, String> properties = new HashMap<>();
 
     public String getId() {
         return id;
@@ -128,5 +133,33 @@ public class Device {
 
     public Instant getObservedAt() {
         return observedAt;
+    }
+
+    public void updateProperty(Property property) {
+        String key = property.getKey().toLowerCase();
+        Object value = property.getValue();
+        switch (key) {
+            case "objectname":
+            case "name":
+                setObjectName((String) value);
+                break;
+            case "protocolversion":
+                setProtocolVersion((String) value);
+                break;
+            case "protocolrevision":
+                setProtocolRevision((String) value);
+                break;
+            default:
+                properties.put(key, (String) value);
+        }
+
+    }
+
+    public boolean isSegmentationSupported() {
+        return segmentationSupported;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }

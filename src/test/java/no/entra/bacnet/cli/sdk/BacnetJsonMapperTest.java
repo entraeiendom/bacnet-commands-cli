@@ -63,4 +63,32 @@ class BacnetJsonMapperTest {
         assertEquals(47808, device.getPortNumber());
         assertEquals(Instant.parse("2021-03-28T17:39:11.695947Z"),device.getObservedAt() );
     }
+
+    @Test
+    void mapFromJsonInstanceNuber() {
+        String readPropertiesMultiple = "{\n" +
+                "    \"invokeId\": 0,\n" +
+                "    \"configurationRequest\": {\n" +
+                "      \"observedAt\": \"2021-04-01T13:37:47.908Z\",\n" +
+                "      \"name\": \"FWFCU\",\n" +
+                "      \"source\": {\n" +
+                "        \"deviceId\": \"TODO\",\n" +
+                "        \"objectId\": \"Device_8\"\n" +
+                "      }\n" +
+                "    },\n" +
+                "    \"sender\": \"unknown\",\n" +
+                "    \"service\": \"ReadPropertyMultiple\"\n" +
+                "  }";
+        BacnetMessage bacnetMessage = BacnetJsonMapper.map(readPropertiesMultiple);
+        assertNotNull(bacnetMessage);
+        assertEquals("ReadPropertyMultiple", bacnetMessage.getService());
+        ConfigurationRequest configurationRequest = bacnetMessage.getConfigurationRequest();
+        assertNotNull(configurationRequest);
+        assertNotNull(configurationRequest.getSource());
+        assertNotNull(configurationRequest.getProperties());
+        assertNotNull(configurationRequest.getProperties().get("source"));
+        assertNotNull(bacnetMessage.getProperties());
+        assertNotNull(bacnetMessage.getProperties().get("source"));
+
+    }
 }

@@ -1,6 +1,7 @@
 package no.entra.bacnet.cli.device;
 
 import no.entra.bacnet.cli.sdk.device.Device;
+import no.entra.bacnet.objects.Property;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class DeviceRepository {
                 .collect(Collectors.toList());
         return devicesFound;
     }
+
     public synchronized List<Device> list() {
         return devices;
     }
@@ -89,7 +91,7 @@ public class DeviceRepository {
             devices
                     .stream()
                     .filter(d -> d.getIpAddress().equals(ipAddress) && d.getPortNumber().equals(portNumber) && d.getInstanceNumber().equals(instanceNumber))
-                    .forEach(d ->  {
+                    .forEach(d -> {
                         updatedCount[0]++;
                         d.setObservedAt(observedAt);
                     });
@@ -97,7 +99,7 @@ public class DeviceRepository {
             devices
                     .stream()
                     .filter(d -> d.getIpAddress().equals(ipAddress) && d.getPortNumber().equals(portNumber) && d.getInstanceNumber() == null)
-                    .forEach(d ->  {
+                    .forEach(d -> {
                         updatedCount[0]++;
                         d.setObservedAt(observedAt);
                     });
@@ -113,11 +115,29 @@ public class DeviceRepository {
         return updatedCount[0];
     }
 
+
     /**
      * Used for testing
      */
     public void clearAll() {
-       devices = new ArrayList<>();
+        devices = new ArrayList<>();
     }
 
+    public void updateByIpPortInstanceNumber(String ipAddress, Integer port, Integer instanceNumber, List<Property> properties) {
+//        Predicate<Device> deviceMatches = device -> {
+//            device.getIpAddress().equals(ipAddress)
+//                    && device.getPortNumber().equals(port)
+//                    && device.getInstanceNumber().equals(instanceNumber);
+//        }
+        devices.stream().filter(device -> device.getIpAddress().equals(ipAddress))
+//                .filter(device -> device.getPortNumber().equals(port))
+//                .filter(device -> device.getInstanceNumber().equals(instanceNumber))
+                .forEach(device -> {
+                    for (Property property : properties) {
+                        device.updateProperty(property);
+                    }
+                    device.setObservedAt(Instant.now());
+                });
+    }
 }
+

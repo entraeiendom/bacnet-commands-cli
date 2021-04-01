@@ -8,12 +8,15 @@ import no.entra.bacnet.cli.sdk.Sender;
 import no.entra.bacnet.cli.sdk.device.Device;
 import no.entra.bacnet.cli.sdk.device.DeviceMapper;
 import no.entra.bacnet.cli.sdk.observation.ObservationMapper;
+import no.entra.bacnet.cli.sdk.properties.PropertiesMapper;
 import no.entra.bacnet.json.Bacnet2Json;
 import no.entra.bacnet.json.Observation;
+import no.entra.bacnet.objects.Property;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.BlockingDeque;
 
 public class BacnetMessageConsumer implements Runnable {
@@ -71,11 +74,15 @@ public class BacnetMessageConsumer implements Runnable {
             ConfigurationRequest configurationRequest = bacnetMessage.getConfigurationRequest();
             String service = bacnetMessage.getService();
             Sender sender = bacnetMessage.getSender();
+            Device device;
             switch (service) {
                 case "WhoIs":
                 case "IAm":
-                    Device device = DeviceMapper.mapFromConfigurationRequest(sender, configurationRequest);
+                    device = DeviceMapper.mapFromConfigurationRequest(sender, configurationRequest);
                     updateDevice(device);
+                    break;
+                case "ReadPropertyMultiple":
+                    updatePropertiesForDevice(sender, configurationRequest);
                     break;
                 default:
                     System.out.println(String.format("Service not implemented yet %s", service));
@@ -92,6 +99,13 @@ public class BacnetMessageConsumer implements Runnable {
         if (bacnetMessage != null) {
             System.out.println("Object: " + bacnetMessage.toString());
         }
+    }
+
+    void updatePropertiesForDevice(Sender sender, ConfigurationRequest configurationRequest) {
+        List<Property> properties = PropertiesMapper.mapProperties(configurationRequest);
+
+        DeviceRepository.getInstance()
+                .updateByIpPortInstanceNumber(sender.getIpAddress(), sender.getPort(), sender.getInstanceNumber(), properties);
     }
 
     void updateDevice(Device device) {
