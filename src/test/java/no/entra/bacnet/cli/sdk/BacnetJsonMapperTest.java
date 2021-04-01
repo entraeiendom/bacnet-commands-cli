@@ -2,6 +2,8 @@ package no.entra.bacnet.cli.sdk;
 
 import no.entra.bacnet.cli.sdk.device.Device;
 import no.entra.bacnet.cli.sdk.device.DeviceMapper;
+import no.entra.bacnet.objects.ObjectId;
+import no.entra.bacnet.objects.ObjectType;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -86,9 +88,10 @@ class BacnetJsonMapperTest {
         assertNotNull(configurationRequest);
         assertNotNull(configurationRequest.getSource());
         assertNotNull(configurationRequest.getProperties());
-        assertNotNull(configurationRequest.getProperties().get("source"));
+        assertNotNull(configurationRequest.getObjectIdentifier());
+        ObjectId expectedObjectId = new ObjectId(ObjectType.Device, "8");
+        assertEquals(expectedObjectId, configurationRequest.getObjectIdentifier());
         assertNotNull(bacnetMessage.getProperties());
-        assertNotNull(bacnetMessage.getProperties().get("source"));
 
     }
 }
