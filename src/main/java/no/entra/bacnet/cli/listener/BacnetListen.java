@@ -5,6 +5,9 @@ import no.entra.bacnet.cli.sdk.device.Device;
 import org.slf4j.Logger;
 import picocli.CommandLine;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -24,14 +27,31 @@ public class BacnetListen implements Runnable {
     private long messageCount = 0;
     private BlockingDeque<BacnetObservedMessage> messageQueue;
 
+    public BacnetListen() {
+    }
+
+    public BacnetListen(InetAddress localIpAddress) {
+        this.ipAddress = localIpAddress.toString();
+    }
+
     @Override
     public void run() {
         messageQueue = new LinkedBlockingDeque<>(1000);
 
         Thread messageConsumerThread = null;
         Thread messageListenerThread = null;
+        Thread localIpMessageListenerThread = null;
         BacnetMessageConsumer messageConsumer = new BacnetMessageConsumer(messageQueue, this);
         BacnetMessageListener messageListener = new BacnetMessageListener(messageQueue, port);
+
+        InetAddress localIpAddress = null;
+        try {
+            localIpAddress = Inet4Address.getByName(ipAddress);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return;
+        }
+        BacnetMessageListener localIpListener = new BacnetMessageListener(messageQueue, port, localIpAddress);
 
         loop:
         try {
@@ -40,6 +60,8 @@ public class BacnetListen implements Runnable {
             messageConsumerThread.start();
             messageListenerThread = new Thread(messageListener);
             messageListenerThread.start();
+            localIpMessageListenerThread = new Thread(localIpListener);
+            localIpMessageListenerThread.start();
 
             while (true) {
                 System.out.println("Type q to exit.");
@@ -78,6 +100,10 @@ public class BacnetListen implements Runnable {
             if (messageListenerThread != null && messageListenerThread.isAlive()) {
                 messageListenerThread.interrupt();
             }
+
+            if (localIpMessageListenerThread != null && localIpMessageListenerThread.isAlive()) {
+                localIpMessageListenerThread.interrupt();
+            }
         }
     }
 
@@ -95,6 +121,12 @@ public class BacnetListen implements Runnable {
     }
 
     public static void main(String[] args) {
+        InetAddress localIpAddress = null;
+        try {
+            localIpAddress = Inet4Address.getByName("192.168.2.116");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         BacnetListen bacnetListen = new BacnetListen();
         bacnetListen.run();
     }

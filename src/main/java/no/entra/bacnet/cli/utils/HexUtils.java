@@ -1,5 +1,6 @@
 package no.entra.bacnet.cli.utils;
 
+@Deprecated
 public class HexUtils {
 
     public static int toInt(String hexString) throws IllegalArgumentException {

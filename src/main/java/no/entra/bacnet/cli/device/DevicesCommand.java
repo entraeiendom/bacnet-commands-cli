@@ -10,7 +10,7 @@ import static no.entra.bacnet.BacnetConstants.BACNET_DEFAULT_PORT;
 import static no.entra.bacnet.cli.utils.HexUtils.hexStringToByteArray;
 
 @CommandLine.Command(name = "devices",
-//        subcommands = { SubcommandAsClass.class, CommandLine.HelpCommand.class },
+        subcommands = { FindObjectNameCommand.class, CommandLine.HelpCommand.class },
         description = "Find and List Devices")
 public class DevicesCommand {
     @CommandLine.Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
@@ -42,6 +42,10 @@ public class DevicesCommand {
 
     void sendWhoIsMessage() throws IOException, InterruptedException {
         String hexString = "810b000c0120ffff00ff1008";
+        send(hexString);
+    }
+    void send(String hexString) throws IOException, InterruptedException {
+
         SocketAddress inetAddress = new InetSocketAddress(port);
         InetAddress sendToAddress = InetAddress.getByName(ipAddress);
         DatagramSocket socket = new DatagramSocket(null);
@@ -68,6 +72,20 @@ public class DevicesCommand {
         }
     }
     */
+
+    @CommandLine.Command(name = "hexString", description = "Send supplied Bacnet HexString")
+    void sendHex(@CommandLine.Parameters(paramLabel = "ipAddress", description = "IP Address to the Device") String ipAddressParam,
+                 @CommandLine.Parameters(paramLabel = "hexString", description = "Bacnet HexString to send") String hexString) {
+        //810a001701040275000e0c020000081e094d0962098b1f
+        this.ipAddress = ipAddressParam;
+        try {
+            send(hexString);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @CommandLine.Command(name = "list", description = "Resolves ISO country codes (ISO-3166-1)")
     void listDevices(

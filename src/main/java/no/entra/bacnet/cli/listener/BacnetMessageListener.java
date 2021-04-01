@@ -3,10 +3,7 @@ package no.entra.bacnet.cli.listener;
 import no.entra.bacnet.cli.utils.BacnetUtils;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.net.StandardSocketOptions;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.concurrent.BlockingDeque;
@@ -15,6 +12,7 @@ import static no.entra.bacnet.cli.utils.HexUtils.integersToHex;
 
 public class BacnetMessageListener implements Runnable {
 
+    private InetAddress ipAddress = null;
     private volatile boolean isAlive = true;
     private final BlockingDeque<BacnetObservedMessage> messageQueue;
     private final int port;
@@ -30,13 +28,25 @@ public class BacnetMessageListener implements Runnable {
         this.port = port;
     }
 
+    public BacnetMessageListener(BlockingDeque<BacnetObservedMessage> messageQueue, int port, InetAddress listenToIpAddress) {
+        this.messageQueue = messageQueue;
+        this.port = port;
+        this.ipAddress = listenToIpAddress;
+    }
+
     @Override
     public void run() {
         try {
             channel = DatagramChannel.open();
             channel.setOption(StandardSocketOptions.SO_REUSEPORT, true);
             channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-            InetSocketAddress inetAddress = new InetSocketAddress(port);
+            InetSocketAddress inetAddress = null;
+            if (ipAddress == null) {
+                inetAddress = new InetSocketAddress(port);
+                System.out.println("You will need to setup a new listener on the local ip also.");
+            } else {
+                inetAddress = new InetSocketAddress(ipAddress, port);
+            }
             channel.socket().bind(inetAddress);
             System.out.println(String.format("Listening to %s:%s", inetAddress, port));
 
