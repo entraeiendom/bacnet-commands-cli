@@ -130,8 +130,8 @@ public class DeviceRepository {
 //                    && device.getInstanceNumber().equals(instanceNumber);
 //        }
         devices.stream().filter(device -> device.getIpAddress().equals(ipAddress))
-//                .filter(device -> device.getPortNumber().equals(port))
-//                .filter(device -> device.getInstanceNumber().equals(instanceNumber))
+                .filter(device -> device.getPortNumber().equals(port))
+                .filter(device -> device.getInstanceNumber().equals(instanceNumber))
                 .forEach(device -> {
                     for (Property property : properties) {
                         device.updateProperty(property);

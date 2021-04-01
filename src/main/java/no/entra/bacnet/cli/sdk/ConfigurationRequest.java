@@ -11,6 +11,7 @@ import static no.entra.bacnet.utils.StringUtils.hasValue;
 
 public class ConfigurationRequest {
     private String id;
+    private String name;
     private Instant observedAt;
     private Map<String, String > source;
     private Map<String, String> properties;
@@ -25,6 +26,14 @@ public class ConfigurationRequest {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Instant getObservedAt() {

@@ -11,6 +11,7 @@ import no.entra.bacnet.cli.sdk.observation.ObservationMapper;
 import no.entra.bacnet.cli.sdk.properties.PropertiesMapper;
 import no.entra.bacnet.json.Bacnet2Json;
 import no.entra.bacnet.json.Observation;
+import no.entra.bacnet.objects.ObjectId;
 import no.entra.bacnet.objects.Property;
 
 import java.net.InetSocketAddress;
@@ -57,6 +58,17 @@ public class BacnetMessageConsumer implements Runnable {
                 Sender sender = new Sender();
                 sender.setPort(((InetSocketAddress) senderAddress).getPort());
                 sender.setIpAddress(((InetSocketAddress) senderAddress).getHostName());
+                ObjectId objectId = bacnetMessage.getObjectIdentifier();
+                if (objectId != null) {
+                    try {
+                        String insNumStr = objectId.getInstanceNumber();
+                        Integer instanceNumber = Integer.parseInt(insNumStr);
+                        sender.setInstanceNumber(instanceNumber);
+                    } catch (NumberFormatException nfe) {
+                        System.err.println(String.format("Could not parse [%s] to Integer", objectId.getInstanceNumber()));
+                    }
+                }
+
                 bacnetMessage.setSender(sender);
             }
             handleMessageContent(bacnetMessage);
@@ -103,7 +115,18 @@ public class BacnetMessageConsumer implements Runnable {
 
     void updatePropertiesForDevice(Sender sender, ConfigurationRequest configurationRequest) {
         List<Property> properties = PropertiesMapper.mapProperties(configurationRequest);
-
+        boolean propertiesHasObjectName = false;
+        if (configurationRequest.getName() != null) {
+            for (Property property : properties) {
+                String key = property.getKey().toLowerCase();
+                if (key.equals("name") || key.equals("objectname")) {
+                    propertiesHasObjectName = true;
+                }
+            }
+        }
+        if (!propertiesHasObjectName) {
+            properties.add(new Property("ObjectName", configurationRequest.getName()));
+        }
         DeviceRepository.getInstance()
                 .updateByIpPortInstanceNumber(sender.getIpAddress(), sender.getPort(), sender.getInstanceNumber(), properties);
     }

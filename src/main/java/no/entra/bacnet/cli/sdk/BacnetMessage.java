@@ -1,9 +1,14 @@
 package no.entra.bacnet.cli.sdk;
 
 import no.entra.bacnet.json.Observation;
+import no.entra.bacnet.json.Source;
+import no.entra.bacnet.objects.ObjectId;
+import no.entra.bacnet.objects.ObjectType;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static no.entra.bacnet.utils.StringUtils.hasValue;
 
 public class BacnetMessage {
 
@@ -31,6 +36,7 @@ public class BacnetMessage {
     }
 
     public Sender getSender() {
+
         return sender;
     }
 
@@ -68,6 +74,27 @@ public class BacnetMessage {
 
     public boolean hasConfigurationReqest() {
         return this.getConfigurationRequest() != null;
+    }
+
+    public ObjectId getObjectIdentifier() {
+        ObjectId objectId = null;
+        if (configurationRequest != null) {
+            objectId = configurationRequest.getObjectIdentifier();
+        } else if (observation != null && observation.getSource() != null) {
+            Source source = observation.getSource();
+            if (source != null && source.getObjectId() != null) {
+                String objectIdValue = source.getObjectId();
+                if (hasValue(objectIdValue) && objectIdValue.contains("_")) {
+                    String[] typeAndInstance = objectIdValue.split("_");
+                    if (typeAndInstance.length == 2) {
+                        ObjectType objectType = ObjectType.valueOf(typeAndInstance[0]);
+                        String instanceNumber = typeAndInstance[1];
+                        objectId = new ObjectId(objectType, instanceNumber);
+                    }
+                }
+            }
+        }
+        return objectId;
     }
 
     @Override
