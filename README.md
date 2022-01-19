@@ -37,7 +37,7 @@ instance: 8, ipAddress: 192.168.2.118, port: 47808, lastSeen: 2021-04-01T05:50:1
 ```
 bacnet devices objectName -ip=192.168.2.118 -i=8
 ```
-5. Terminal windo no 1:
+5. Terminal window no 1:
 Repeat the `list` command.
 Expect the list to be updated with the objectName from device with instanceId 8.
 
