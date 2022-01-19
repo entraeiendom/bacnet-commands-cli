@@ -31,7 +31,11 @@ public class BacnetListen implements Runnable {
     }
 
     public BacnetListen(InetAddress localIpAddress) {
-        this.ipAddress = localIpAddress.toString();
+        if (localIpAddress.toString()!= null && localIpAddress.toString().startsWith("/")) {
+            this.ipAddress = localIpAddress.toString().substring(1);
+        } else {
+            this.ipAddress = localIpAddress.toString();
+        }
     }
 
     @Override
@@ -123,11 +127,11 @@ public class BacnetListen implements Runnable {
     public static void main(String[] args) {
         InetAddress localIpAddress = null;
         try {
-            localIpAddress = Inet4Address.getByName("192.168.2.116");
+            localIpAddress = Inet4Address.getByName("192.168.2.29");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        BacnetListen bacnetListen = new BacnetListen();
+        BacnetListen bacnetListen = new BacnetListen(localIpAddress);
         bacnetListen.run();
     }
 }

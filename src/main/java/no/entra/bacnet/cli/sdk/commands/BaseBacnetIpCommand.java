@@ -50,7 +50,7 @@ public abstract class BaseBacnetIpCommand {
             DatagramPacket packet = new DatagramPacket(buf, buf.length, sendToAddress, BACNET_DEFAULT_PORT);
             log.debug("Sending: {}", packet);
             socket.send(packet);
-            Thread.sleep(100);
+            Thread.sleep(1);
             socket.close();
         } catch (SocketException e) {
             e.printStackTrace();
