@@ -45,7 +45,7 @@
       </snapshots>
       <id>cantara-releases</id>
       <name>Cantara Release Repository</name>
-      <url>http://mvnrepo.cantara.no/content/repositories/releases/</url>
+      <url>https://mvnrepo.cantara.no/content/repositories/releases/</url>
     </repository>
     <repository>
       <releases>
@@ -56,7 +56,7 @@
       </snapshots>
       <id>cantara-snapshots</id>
       <name>Cantara Snapshot Repository</name>
-      <url>http://mvnrepo.cantara.no/content/repositories/snapshots/</url>
+      <url>https://mvnrepo.cantara.no/content/repositories/snapshots/</url>
     </repository>
   </repositories>
   <distributionManagement>
