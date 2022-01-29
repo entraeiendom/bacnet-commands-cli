@@ -1,9 +1,9 @@
 package no.entra.bacnet.cli.device;
 
 import no.entra.bacnet.cli.sdk.commands.properties.ReadPropertyMultipleCommand;
+import no.entra.bacnet.internal.properties.PropertyIdentifier;
 import no.entra.bacnet.objects.ObjectId;
 import no.entra.bacnet.objects.ObjectType;
-import no.entra.bacnet.objects.PropertyIdentifier;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class FindObjectNameCommand implements Runnable {
         InetAddress sendToAddress = null;
         try {
             sendToAddress = InetAddress.getByName(ipAddress);
-            ObjectId objectId = new ObjectId(ObjectType.Device, Integer.valueOf(instanceNumber).toString());
+            ObjectId objectId = new ObjectId(ObjectType.Device, instanceNumber);
             ReadPropertyMultipleCommand objectNameCommand = new ReadPropertyMultipleCommand
                     .ReadPropertyMultipleCommandBuilder(sendToAddress)
                     .withObjectId(objectId)

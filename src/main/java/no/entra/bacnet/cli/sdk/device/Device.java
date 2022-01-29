@@ -1,6 +1,6 @@
 package no.entra.bacnet.cli.sdk.device;
 
-import no.entra.bacnet.objects.Property;
+import no.entra.bacnet.internal.properties.Property;
 
 import java.time.Instant;
 import java.util.HashMap;

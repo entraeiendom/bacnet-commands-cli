@@ -9,10 +9,10 @@ import no.entra.bacnet.cli.sdk.device.Device;
 import no.entra.bacnet.cli.sdk.device.DeviceMapper;
 import no.entra.bacnet.cli.sdk.observation.ObservationMapper;
 import no.entra.bacnet.cli.sdk.properties.PropertiesMapper;
+import no.entra.bacnet.internal.properties.Property;
 import no.entra.bacnet.json.Bacnet2Json;
 import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.objects.ObjectId;
-import no.entra.bacnet.objects.Property;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -61,8 +61,7 @@ public class BacnetMessageConsumer implements Runnable {
                 ObjectId objectId = bacnetMessage.getObjectIdentifier();
                 if (objectId != null) {
                     try {
-                        String insNumStr = objectId.getInstanceNumber();
-                        Integer instanceNumber = Integer.parseInt(insNumStr);
+                        Integer instanceNumber = objectId.getInstanceNumber();
                         sender.setInstanceNumber(instanceNumber);
                     } catch (NumberFormatException nfe) {
                         System.err.println(String.format("Could not parse [%s] to Integer", objectId.getInstanceNumber()));

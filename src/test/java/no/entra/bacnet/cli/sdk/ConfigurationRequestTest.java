@@ -22,6 +22,6 @@ class ConfigurationRequestTest {
         ObjectId objectId = configurationRequest.getObjectIdentifier();
         assertNotNull(objectId);
         assertEquals(ObjectType.Device, objectId.getObjectType());
-        assertEquals("8", objectId.getInstanceNumber());
+        assertEquals(8, objectId.getInstanceNumber());
     }
 }

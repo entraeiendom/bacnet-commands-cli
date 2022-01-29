@@ -1,7 +1,7 @@
 package no.entra.bacnet.cli.sdk.properties;
 
 import no.entra.bacnet.cli.sdk.ConfigurationRequest;
-import no.entra.bacnet.objects.Property;
+import no.entra.bacnet.internal.properties.Property;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -75,7 +75,7 @@ public class ConfigurationRequest {
                 String[] typeAndInstance = objectIdValue.split("_");
                 if (typeAndInstance.length == 2) {
                     ObjectType objectType = ObjectType.valueOf(typeAndInstance[0]);
-                    String instanceNumber = typeAndInstance[1];
+                    Integer instanceNumber = Integer.valueOf(typeAndInstance[1]);
                     objectId = new ObjectId(objectType, instanceNumber);
                 }
             }

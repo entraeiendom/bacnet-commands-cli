@@ -1,7 +1,7 @@
 package no.entra.bacnet.cli.device;
 
 import no.entra.bacnet.cli.sdk.device.Device;
-import no.entra.bacnet.objects.Property;
+import no.entra.bacnet.internal.properties.Property;
 
 import java.time.Instant;
 import java.util.ArrayList;

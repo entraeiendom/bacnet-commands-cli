@@ -90,7 +90,7 @@ class BacnetJsonMapperTest {
         assertNotNull(configurationRequest.getProperties());
         assertEquals("FWFCU", configurationRequest.getName());
         assertNotNull(configurationRequest.getObjectIdentifier());
-        ObjectId expectedObjectId = new ObjectId(ObjectType.Device, "8");
+        ObjectId expectedObjectId = new ObjectId(ObjectType.Device, 8);
         assertEquals(expectedObjectId, configurationRequest.getObjectIdentifier());
         assertNotNull(bacnetMessage.getProperties());
 
