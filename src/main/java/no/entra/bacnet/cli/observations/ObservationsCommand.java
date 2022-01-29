@@ -1,17 +1,17 @@
-package no.entra.bacnet.cli.subscribe;
+package no.entra.bacnet.cli.observations;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 import static no.entra.bacnet.BacnetConstants.BACNET_DEFAULT_PORT;
 
-@CommandLine.Command(name = "subscriptions",
+@CommandLine.Command(name = "observations",
         subcommands = { SubscribeObservationsCommand.class, CommandLine.HelpCommand.class },
         description = "Subscribe to observations from sensors.")
-public class SubscriptionsCommand {
-    @CommandLine.Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
+public class ObservationsCommand {
+    @Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
     private String ipAddress = "127.0.0.1";
-    @CommandLine.Option(names = {"-p", "--port"}, description = "Bacnet Port. Default is 47808")
+    @Option(names = {"-p", "--port"}, description = "Bacnet Port. Default is 47808")
     private int port = BACNET_DEFAULT_PORT;
+
 }
-
-

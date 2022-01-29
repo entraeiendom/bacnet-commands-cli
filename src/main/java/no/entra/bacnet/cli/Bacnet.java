@@ -4,7 +4,7 @@ import no.entra.bacnet.cli.device.DevicesCommand;
 import no.entra.bacnet.cli.device.FindObjectNameCommand;
 import no.entra.bacnet.cli.device.FindSupportedServicesCommand;
 import no.entra.bacnet.cli.listener.BacnetListen;
-import no.entra.bacnet.cli.subscribe.SubscriptionsCommand;
+import no.entra.bacnet.cli.observations.ObservationsCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -17,7 +17,7 @@ import picocli.CommandLine.Command;
                 FindSupportedServicesCommand.class,
                 FindObjectNameCommand.class,
                 DevicesCommand.class,
-                SubscriptionsCommand.class,
+                ObservationsCommand.class,
                 BacnetListen.class
         })
 class Bacnet {

@@ -43,3 +43,11 @@ bacnet devices objectName -ip=192.168.2.118 -i=8
 Repeat the `list` command.
 Expect the list to be updated with the objectName from device with instanceId 8.
 
+
+## Subscribe to observations
+
+Subscribe to Change Of Value from a output named identified as AnalogValue, instance 1 on bacnet device on ip 192.168.2.118
+``` 
+bacnet observations subscribe -ip=192.168.2.118 analogValue 1
+```
+
