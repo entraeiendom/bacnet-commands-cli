@@ -19,6 +19,8 @@ bacnet listen -ip="<your ip address>"
 bacnet devices find <local broadcast address>
 eg:
 bacnet devices find 192.168.2.255
+or
+bacnet devices -ip=192.168.2.255 find
 ```
 
 3. Terminal window no 1:
