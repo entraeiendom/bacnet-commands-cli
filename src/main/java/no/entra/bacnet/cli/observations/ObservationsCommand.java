@@ -6,7 +6,7 @@ import picocli.CommandLine.Option;
 import static no.entra.bacnet.BacnetConstants.BACNET_DEFAULT_PORT;
 
 @CommandLine.Command(name = "observations",
-        subcommands = { SubscribeObservationsCommand.class, CommandLine.HelpCommand.class },
+        subcommands = { SubscribeObservationsCommand.class, CancelSubscriptionsObservationsCommand.class, CommandLine.HelpCommand.class },
         description = "Subscribe to observations from sensors.")
 public class ObservationsCommand {
     @Option(names = {"-ip", "--ipAddress"}, description = "IP Address to the Device")
