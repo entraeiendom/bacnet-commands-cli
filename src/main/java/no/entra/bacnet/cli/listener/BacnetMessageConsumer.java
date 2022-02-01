@@ -1,5 +1,8 @@
 package no.entra.bacnet.cli.listener;
 
+import no.entra.bacnet.BacnetMessageParser;
+import no.entra.bacnet.BacnetResponse;
+import no.entra.bacnet.apdu.Apdu;
 import no.entra.bacnet.cli.device.DeviceRepository;
 import no.entra.bacnet.cli.sdk.BacnetJsonMapper;
 import no.entra.bacnet.cli.sdk.BacnetMessage;
@@ -13,7 +16,12 @@ import no.entra.bacnet.internal.properties.Property;
 import no.entra.bacnet.json.Bacnet2Json;
 import no.entra.bacnet.json.Observation;
 import no.entra.bacnet.objects.ObjectId;
+import no.entra.bacnet.sdk.commands.acknowledge.AcknowledgeCommand;
+import no.entra.bacnet.sdk.commands.cov.SubscribeCovCommand;
+import no.entra.bacnet.services.ConfirmedServiceChoice;
+import no.entra.bacnet.services.ServiceChoice;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.time.Instant;
@@ -51,7 +59,7 @@ public class BacnetMessageConsumer implements Runnable {
         String hexString = observedMessage.getHexString();
         try {
             String bacnetJson = Bacnet2Json.hexStringToJson(hexString);
-            System.out.println("BacnetJson recieived is " + bacnetJson);
+            System.out.println("BacnetJson received is " + bacnetJson);
             BacnetMessage bacnetMessage = BacnetJsonMapper.map(bacnetJson);
             SocketAddress senderAddress = observedMessage.getSenderAddress();
             if (senderAddress != null && senderAddress instanceof InetSocketAddress) {
@@ -69,6 +77,17 @@ public class BacnetMessageConsumer implements Runnable {
                 }
 
                 bacnetMessage.setSender(sender);
+            }
+            BacnetResponse bacnetResponse = BacnetMessageParser.parse(hexString);
+            if (bacnetResponse != null && bacnetResponse.getApdu() != null) {
+                Apdu apdu = bacnetResponse.getApdu();
+                ServiceChoice serviceChoice = apdu.getServiceChoice();
+                if(serviceChoice == ConfirmedServiceChoice.ConfirmedCovNotification) {
+                    Sender sender = bacnetMessage.getSender();
+                    InetAddress sendToAddress = SubscribeCovCommand.inetAddressFromString(sender.getIpAddress());
+                    AcknowledgeCommand covCommand = new AcknowledgeCommand(sendToAddress, apdu.getInvokeId(), ConfirmedServiceChoice.ConfirmedCovNotification);
+                    covCommand.execute();
+                }
             }
             handleMessageContent(bacnetMessage);
         } catch (Exception e) {

@@ -28,8 +28,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <bacnet.typelib.version>0.14.8</bacnet.typelib.version>
-    <bacnet.sdk.version>0.6.5</bacnet.sdk.version>
+    <bacnet.typelib.version>0.14.9</bacnet.typelib.version>
+    <bacnet.sdk.version>0.6.6</bacnet.sdk.version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
@@ -89,6 +89,16 @@
       <groupId>no.entra.bacnet</groupId>
       <artifactId>bacnet-sdk</artifactId>
       <version>${bacnet.sdk.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>no.entra.bacnet</groupId>
+          <artifactId>bacnet2json</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>no.entra.bacnet</groupId>
+          <artifactId>bacnet-typelib</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>no.entra.bacnet</groupId>
