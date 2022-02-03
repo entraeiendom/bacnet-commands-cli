@@ -24,7 +24,7 @@ public class CancelSubscriptionsObservationsCommand {
     private Integer subscriptionId;
 
 
-    @CommandLine.Command(name = "analogValue", description = "Subscribe to observations from an analogValue output, " +
+    @CommandLine.Command(name = "analogValue", description = "Cancel subscription to observations from an analogValue, " +
             "from a single BacnetDevice")
     void cancelAnalogValue(@Parameters(paramLabel = "instance", description = "Instance number on the Bacent Device", arity ="1") Integer instanceNumberParam,
     @Parameters(paramLabel = "subscriptionId", description = "Cancel subscription to observations from analogValue output", arity = "1") Integer subscriptionIdParam) {
@@ -39,6 +39,29 @@ public class CancelSubscriptionsObservationsCommand {
             ObjectId analogValue1 = new ObjectId(ObjectType.AnalogValue, instanceNumber);
             InetAddress sendToAddress = SubscribeCovCommand.inetAddressFromString(ipAddress);
             CancelSubscribeCovCommand covCommand = new CancelSubscribeCovCommand(sendToAddress, subscriptionId, analogValue1);
+            covCommand.setInvokeId(15);
+            covCommand.execute();
+            System.out.println(String.format("Canceled subscription on BacnetDevice %s:%s subscriptionId: %s ", ipAddress, port, subscriptionId));
+        } catch (IOException e) {
+            System.err.println(String.format("Failed to cancel subscription from BacnetDevice %s:%s subscriptionId:%s.\nReason:%s ", ipAddress, port, subscriptionId, e));
+        }
+    }
+
+    @CommandLine.Command(name = "analogInput", description = "Cancel subscription to observations from an analogInput, " +
+            "from a single BacnetDevice")
+    void cancelAnalogInput(@Parameters(paramLabel = "instance", description = "Instance number on the Bacent Device", arity ="1") Integer instanceNumberParam,
+                           @Parameters(paramLabel = "subscriptionId", description = "Cancel subscription to observations from analogInput output", arity = "1") Integer subscriptionIdParam) {
+
+        if (instanceNumberParam != null) {
+            this.instanceNumber = instanceNumberParam;
+        }
+        if (subscriptionIdParam != null) {
+            this.subscriptionId = subscriptionIdParam;
+        }
+        try {
+            ObjectId analogInput = new ObjectId(ObjectType.AnalogInput, instanceNumber);
+            InetAddress sendToAddress = SubscribeCovCommand.inetAddressFromString(ipAddress);
+            CancelSubscribeCovCommand covCommand = new CancelSubscribeCovCommand(sendToAddress, subscriptionId, analogInput);
             covCommand.setInvokeId(15);
             covCommand.execute();
             System.out.println(String.format("Canceled subscription on BacnetDevice %s:%s subscriptionId: %s ", ipAddress, port, subscriptionId));
