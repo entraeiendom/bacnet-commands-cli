@@ -2,7 +2,7 @@ package no.entra.bacnet.cli;
 
 import no.entra.bacnet.cli.device.DevicesCommand;
 import no.entra.bacnet.cli.device.FindObjectNameCommand;
-import no.entra.bacnet.cli.device.FindSupportedServicesCommand;
+import no.entra.bacnet.cli.device.SupportedServicesCommand;
 import no.entra.bacnet.cli.listener.BacnetListen;
 import no.entra.bacnet.cli.observations.ObservationsCommand;
 import picocli.CommandLine;
@@ -14,7 +14,7 @@ import picocli.CommandLine.Command;
 @Command(name = "bacnet", mixinStandardHelpOptions = true, version = "0.2.3-SNAPSHOT",
         description = "Find devices, read their names and get present value from sensors.",
         subcommands = {
-                FindSupportedServicesCommand.class,
+                SupportedServicesCommand.class,
                 FindObjectNameCommand.class,
                 DevicesCommand.class,
                 ObservationsCommand.class,
