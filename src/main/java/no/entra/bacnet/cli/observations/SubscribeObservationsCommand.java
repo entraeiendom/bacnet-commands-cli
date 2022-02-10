@@ -4,6 +4,7 @@ import no.entra.bacnet.objects.ObjectId;
 import no.entra.bacnet.objects.ObjectType;
 import no.entra.bacnet.sdk.commands.cov.ConfirmedSubscribeCovCommand;
 import no.entra.bacnet.sdk.commands.cov.SubscribeCovCommand;
+import no.entra.bacnet.sdk.commands.cov.UnConfirmedSubscribeCovCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -24,6 +25,9 @@ public class SubscribeObservationsCommand {
     int port = BACNET_DEFAULT_PORT;
     @Option(names = {"-i", "--instance"}, description = "Instance number on the BacnetDevice", arity = "0.1")
     int instanceNumber = 1;
+    @Option(names = {"-c", "--confirm"}, description = "Require Bacnet Device to send confirmed COV notifications", arity = "0.1")
+    boolean confirmedNotifications = false;
+
     int subscriptionLengthSeconds = SUBSCRIBE_10_MINUTES;
 
     @CommandLine.Command(name = "analogValue", description = "Subscribe to observations from an analogValue output, " +
@@ -38,9 +42,14 @@ public class SubscribeObservationsCommand {
         }
         int subscriptionId = 1;
         try {
-            ObjectId analogValue1 = new ObjectId(ObjectType.AnalogValue, 1);
+            ObjectId analogValue1 = new ObjectId(ObjectType.AnalogValue, instanceNumber);
             InetAddress sendToAddress = SubscribeCovCommand.inetAddressFromString(ipAddress);
-            SubscribeCovCommand covCommand = new ConfirmedSubscribeCovCommand(sendToAddress, subscriptionId, analogValue1);
+            SubscribeCovCommand covCommand;
+            if (confirmedNotifications) {
+                covCommand = new ConfirmedSubscribeCovCommand(sendToAddress, subscriptionId, analogValue1);
+            } else {
+                covCommand = new UnConfirmedSubscribeCovCommand(sendToAddress,subscriptionId,analogValue1);
+            }
             covCommand.setLifetimeSeconds(subscriptionLengthSeconds);
             covCommand.setInvokeId(15);
             covCommand.execute();
@@ -64,9 +73,14 @@ public class SubscribeObservationsCommand {
         }
         int subscriptionId = 1;
         try {
-            ObjectId analogInput = new ObjectId(ObjectType.AnalogInput, 1);
+            ObjectId analogInput = new ObjectId(ObjectType.AnalogInput, instanceNumber);
             InetAddress sendToAddress = SubscribeCovCommand.inetAddressFromString(ipAddress);
-            SubscribeCovCommand covCommand = new ConfirmedSubscribeCovCommand(sendToAddress, subscriptionId, analogInput);
+            SubscribeCovCommand covCommand;
+            if (confirmedNotifications) {
+                covCommand = new ConfirmedSubscribeCovCommand(sendToAddress, subscriptionId, analogInput);
+            } else {
+                covCommand = new UnConfirmedSubscribeCovCommand(sendToAddress,subscriptionId,analogInput);
+            }
             covCommand.setLifetimeSeconds(subscriptionLengthSeconds);
             covCommand.setInvokeId(15);
             covCommand.execute();
