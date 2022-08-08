@@ -28,7 +28,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <bacnet.typelib.version>0.14.10</bacnet.typelib.version>
+    <bacnet.typelib.version>0.14.11</bacnet.typelib.version>
     <bacnet.sdk.version>0.7.3</bacnet.sdk.version>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
