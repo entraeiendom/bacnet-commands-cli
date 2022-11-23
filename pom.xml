@@ -35,7 +35,7 @@
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <mockito.version>4.8.0</mockito.version>
     <junit.version>5.9.0</junit.version>
-    <picoli.version>4.6.3</picoli.version>
+    <picoli.version>4.7.0</picoli.version>
   </properties>
   <repositories>
     <repository>
